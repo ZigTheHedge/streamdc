@@ -19,8 +19,9 @@ public abstract class CommonProxy {
             }
         }
         if(pIndex == -1)
-            ModMain.playerDeathCounters.add(new PlayerDeathCounter(entity.getUniqueID().toString(), 1));
+            ModMain.playerDeathCounters.add(new PlayerDeathCounter(entity.getDisplayNameString(), entity.getUniqueID().toString(), 1));
         else
             ModMain.playerDeathCounters.get(pIndex).addDeath();
+        ModMain.playerDeathCounters.sort((o1, o2) -> o2.getDeathCount() - o1.getDeathCount());
     }
 }

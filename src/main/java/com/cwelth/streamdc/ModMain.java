@@ -25,7 +25,7 @@ public class ModMain {
 
     public static final String NAME = "Stream Death Counter";
     public static final String MODID = "streamdc";
-    public static final String VERSION = "1.0";
+    public static final String VERSION = "1.1";
     public static List<PlayerDeathCounter> playerDeathCounters = new ArrayList<>();
 
     public Configuration config;
@@ -106,6 +106,7 @@ public class ModMain {
     @Mod.EventHandler
     public void serverLoad(FMLServerStartingEvent event)
     {
+        event.registerServerCommand(new DeathCommandHandler());
         proxy.serverStarting(event);
     }
 

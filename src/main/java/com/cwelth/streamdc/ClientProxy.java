@@ -3,6 +3,7 @@ package com.cwelth.streamdc;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentString;
 
 import java.io.File;
 import java.io.FileNotFoundException;

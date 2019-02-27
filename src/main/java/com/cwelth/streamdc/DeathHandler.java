@@ -3,6 +3,7 @@ package com.cwelth.streamdc;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -29,8 +30,10 @@ public class DeathHandler {
                 }
             }
             if(pIndex != -1) {
-                ep.sendMessage(new TextComponentString("You are dead now. Death count is: " + ModMain.playerDeathCounters.get(pIndex).getDeathCount()));
-                ModMain.network.sendTo(new DeathPacket(ep.getUniqueID().toString(), ModMain.playerDeathCounters.get(pIndex).getDeathCount()), (EntityPlayerMP) ep);
+                ep.sendMessage(new TextComponentString(TextFormatting.RED + "You are dead now. Death count is: " + ModMain.playerDeathCounters.get(pIndex).getDeathCount() + ". Your rank is: " + PlayerDeathCounter.getRank(ep.getUniqueID().toString(), ModMain.playerDeathCounters)));
+                PlayerDeathCounter.sendRankTable(ep, ModMain.playerDeathCounters);
+                ModMain.network.sendTo(new DeathPacket(ModMain.playerDeathCounters.get(pIndex).getDeathCount()), (EntityPlayerMP) ep);
+                ModMain.instance.saveConfig();
             }
             else
                 ModMain.logger.warning("No match!");
