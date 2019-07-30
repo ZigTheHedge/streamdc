@@ -16,9 +16,9 @@ public class DeathHandler {
     @SubscribeEvent
     public void onPlayerDeath(LivingDeathEvent e)
     {
-        if(e.getEntity() instanceof EntityPlayer)
+        if(e.getEntity() instanceof EntityPlayerMP)
         {
-            EntityPlayer ep = (EntityPlayer)e.getEntity();
+            EntityPlayerMP ep = (EntityPlayerMP)e.getEntity();
             ModMain.proxy.saveDeath(ep);
 
             int pIndex = -1;
@@ -32,7 +32,7 @@ public class DeathHandler {
             if(pIndex != -1) {
                 ep.sendMessage(new TextComponentString(TextFormatting.RED + "You are dead now. Death count is: " + ModMain.playerDeathCounters.get(pIndex).getDeathCount() + ". Your rank is: " + PlayerDeathCounter.getRank(ep.getUniqueID().toString(), ModMain.playerDeathCounters)));
                 PlayerDeathCounter.sendRankTable(ep, ModMain.playerDeathCounters);
-                ModMain.network.sendTo(new DeathPacket(ModMain.playerDeathCounters.get(pIndex).getDeathCount()), (EntityPlayerMP) ep);
+                ModMain.network.sendTo(new DeathPacket(ModMain.playerDeathCounters.get(pIndex).getDeathCount()), ep);
                 ModMain.instance.saveConfig();
             }
             else

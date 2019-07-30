@@ -1,7 +1,9 @@
 package com.cwelth.streamdc;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -36,16 +38,23 @@ public class DeathPacket implements IMessage {
         @Override
         @SideOnly(Side.CLIENT)
         public IMessage onMessage(final DeathPacket message, final MessageContext ctx) {
-            ModMain.logger.info("Message Catched!");
-            try {
-                FileOutputStream output = new FileOutputStream(ModMain.proxy.getPath() + "/deathcounter.txt", false);
-                output.write(Integer.toString(message.deathCount).getBytes());
-                output.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Minecraft.getMinecraft().addScheduledTask(() -> {
+                try {
+                    Minecraft mc = Minecraft.getMinecraft();
+                    String prefix;
+                    if(mc.isIntegratedServerRunning())
+                        prefix = DimensionManager.getCurrentSaveRootDirectory().getName();
+                    else
+                        prefix = mc.getCurrentServerData().serverIP;
+                    FileOutputStream output = new FileOutputStream(ModMain.proxy.getPath() + "/"+prefix+"_deathcounter.txt", false);
+                    output.write(Integer.toString(message.deathCount).getBytes());
+                    output.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
             return null;
         }
 
