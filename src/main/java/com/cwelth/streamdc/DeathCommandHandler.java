@@ -23,10 +23,11 @@ public class DeathCommandHandler extends CommandBase {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if(sender instanceof EntityPlayer) {
             int rank = PlayerDeathCounter.getRank(((EntityPlayer)sender).getUniqueID().toString(), ModMain.playerDeathCounters);
+            int currentDeathsCount = ModMain.playerDeathCounters.get(rank).getDeathCount();
             if(rank == -1)
                 sender.sendMessage(new TextComponentString(TextFormatting.WHITE + "Your DeathCounter rank is: Out of Ranks (no single death registered!)"));
             else
-                sender.sendMessage(new TextComponentString(TextFormatting.WHITE + "Your DeathCounter rank is: " + rank));
+                sender.sendMessage(new TextComponentString(TextFormatting.WHITE + "Your DeathCounter rank is: " + rank + "(" + currentDeathsCount + " death(s))"));
             PlayerDeathCounter.sendRankTable((EntityPlayer) sender, ModMain.playerDeathCounters);
         }
     }
