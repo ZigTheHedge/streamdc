@@ -1,0 +1,6 @@
+modLoader="javafml" #mandatory
+loaderVersion="[28,)" #mandatory (26 is current forge version)
+[[mods]] #mandatory
+modId="streamdc" #mandatory
+version="2.0" #mandatory
+displayName="Stream Death Counter" #mandatory
