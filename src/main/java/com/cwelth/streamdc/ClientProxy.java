@@ -1,7 +1,7 @@
 package com.cwelth.streamdc;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.io.IOException;
 public class ClientProxy extends CommonProxy {
     @Override
     public String getPath() {
-        final File file = Minecraft.getInstance().gameDir;
+        final File file = Minecraft.getInstance().gameDirectory;
         try {
             return file.getCanonicalFile().getPath();
         } catch (final IOException e) {
@@ -19,7 +19,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void saveDeath(PlayerEntity entity) {
+    public void saveDeath(ServerPlayer entity) {
         super.saveDeath(entity);
     }
 }

@@ -1,15 +1,15 @@
 package com.cwelth.streamdc;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.function.Supplier;
 
-public class DeathPacket {
+public class DeathPacket{
     public int deathCount;
     public String prefix;
 
@@ -21,22 +21,22 @@ public class DeathPacket {
         this.prefix = prefix;
     }
 
-    public DeathPacket(PacketBuffer buf) {
+    public DeathPacket(FriendlyByteBuf buf) {
         deathCount = buf.readInt();
-        prefix = buf.readString();
+        prefix = buf.readUtf();
     }
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(deathCount);
-        buf.writeString(prefix);
+        buf.writeUtf(prefix);
     }
 
     public void handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             try {
                 Minecraft mc = Minecraft.getInstance();
-                if(!mc.isIntegratedServerRunning())
-                    prefix = mc.getCurrentServerData().serverIP;
+                if(!mc.isLocalServer())
+                    prefix = mc.getCurrentServer().ip;
 
                 FileOutputStream output = new FileOutputStream(ModMain.proxy.getPath() + "/"+prefix+"_deathcounter.txt", false);
                 output.write(Integer.toString(deathCount).getBytes());

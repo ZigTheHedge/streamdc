@@ -1,8 +1,8 @@
 package com.cwelth.streamdc;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.event.server.ServerStartingEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,13 +12,13 @@ public class ServerProxy extends CommonProxy {
     private WeakReference<MinecraftServer> serverWeakReference = null;
 
     @Override
-    public void serverStarting(FMLServerStartingEvent event) {
+    public void serverStarting(ServerStartingEvent event) {
         super.serverStarting(event);
         this.serverWeakReference = new WeakReference<MinecraftServer>(event.getServer());
     }
 
     @Override
-    public void saveDeath(PlayerEntity entity) {
+    public void saveDeath(ServerPlayer entity) {
         super.saveDeath(entity);
     }
 

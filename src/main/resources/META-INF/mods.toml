@@ -1,6 +1,28 @@
 modLoader="javafml" #mandatory
-loaderVersion="[28,)" #mandatory (26 is current forge version)
+loaderVersion="[40,)" #mandatory (26 is current forge version)
+license="All rights reserved"
+
 [[mods]] #mandatory
 modId="streamdc" #mandatory
-version="2.0" #mandatory
+version="3.0.0" #mandatory
 displayName="Stream Death Counter" #mandatory
+authors="ZigTheHedge" #optional
+# The description text for the mod (multi line!) (#mandatory)
+description='''
+Mod creates a text file in minecraft instance folder with the death count in last loaded game save.
+'''
+
+[[dependencies.streamdc]] #optional
+modId="forge" #mandatory
+mandatory=true #mandatory
+versionRange="[40,)" #mandatory
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.streamdc]]
+modId="minecraft"
+mandatory=true
+# This version range declares a minimum of the current minecraft version up to but not including the next major version
+versionRange="[1.18.2]"
+ordering="NONE"
+side="BOTH"

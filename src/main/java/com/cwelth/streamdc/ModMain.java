@@ -3,18 +3,20 @@ package com.cwelth.streamdc;
 import com.google.gson.Gson;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.io.*;
@@ -88,30 +90,34 @@ public class ModMain {
     public class ForgeEventHandlers {
 
         @SubscribeEvent
-        public void serverLoad(FMLServerStartingEvent event) {
-            CommandDispatcher<CommandSource> dispatcher = event.getCommandDispatcher();
-            LiteralCommandNode<CommandSource> cmdsSDC = dispatcher.register(
+        public void registerCommands(RegisterCommandsEvent event) {
+            CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
+            LiteralCommandNode<CommandSourceStack> cmdsSDC = dispatcher.register(
                     Commands.literal("dc")
-                    .requires( cs -> cs.getEntity() instanceof ServerPlayerEntity )
-                    .executes( cs -> {
-                        ServerPlayerEntity sender = cs.getSource().asPlayer();
+                            .requires( cs -> cs.getEntity() instanceof ServerPlayer )
+                            .executes( cs -> {
+                                ServerPlayer sender = cs.getSource().getPlayerOrException();
 
-                        int rank = PlayerDeathCounter.getRank(sender.getUniqueID().toString(), ModMain.playerDeathCounters);
+                                int rank = PlayerDeathCounter.getRank(sender.getUUID().toString(), ModMain.playerDeathCounters);
 
-                        if(rank == -1)
-                            sender.sendMessage(new StringTextComponent(TextFormatting.WHITE + "Your DeathCounter rank is: Out of Ranks (no single death registered!)"));
-                        else {
-                            sender.sendMessage(new StringTextComponent(TextFormatting.WHITE + "Your DeathCounter rank is: " + rank + "(" + ModMain.playerDeathCounters.get(rank-1).getDeathCount() + " death(s))"));
-                        }
-                        PlayerDeathCounter.sendRankTable(sender, ModMain.playerDeathCounters);
-                        return 0;
-                    })
+                                if(rank == -1)
+                                    sender.sendMessage(new TextComponent(ChatFormatting.WHITE + "Your DeathCounter rank is: Out of Ranks (no single death registered!)"), Util.NIL_UUID);
+                                else {
+                                    sender.sendMessage(new TextComponent(ChatFormatting.WHITE + "Your DeathCounter rank is: " + rank + "(" + ModMain.playerDeathCounters.get(rank-1).getDeathCount() + " death(s))"), Util.NIL_UUID);
+                                }
+                                PlayerDeathCounter.sendRankTable(sender, ModMain.playerDeathCounters);
+                                return 0;
+                            })
             );
+        }
+
+        @SubscribeEvent
+        public void serverLoad(ServerStartingEvent event) {
             proxy.serverStarting(event);
         }
 
         @SubscribeEvent
-        public void serverStop(FMLServerStoppingEvent event) {
+        public void serverStop(ServerStoppingEvent event) {
             saveConfig();
         }
 
