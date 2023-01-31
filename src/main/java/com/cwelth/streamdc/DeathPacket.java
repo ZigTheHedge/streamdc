@@ -37,7 +37,7 @@ public class DeathPacket{
                 Minecraft mc = Minecraft.getInstance();
                 if(!mc.isLocalServer())
                     prefix = mc.getCurrentServer().ip;
-
+                prefix = prefix.replace(':', '_');
                 FileOutputStream output = new FileOutputStream(ModMain.proxy.getPath() + "/"+prefix+"_deathcounter.txt", false);
                 output.write(Integer.toString(deathCount).getBytes());
                 output.close();

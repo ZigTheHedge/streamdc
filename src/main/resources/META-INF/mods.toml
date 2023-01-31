@@ -4,7 +4,7 @@ license="All rights reserved"
 
 [[mods]] #mandatory
 modId="streamdc" #mandatory
-version="3.0.0" #mandatory
+version="3.0.1" #mandatory
 displayName="Stream Death Counter" #mandatory
 authors="ZigTheHedge" #optional
 # The description text for the mod (multi line!) (#mandatory)
