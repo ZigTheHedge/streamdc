@@ -38,6 +38,11 @@ public class PlayerDeathCounter {
         return this.deathCount;
     }
 
+    public int setDeathCount(int count) {
+        this.deathCount = count;
+        return this.deathCount;
+    }
+
     public static int getRank(String UUID, List<PlayerDeathCounter> playerDeathCounters)
     {
         for (int i = 0; i < playerDeathCounters.size(); i++) {

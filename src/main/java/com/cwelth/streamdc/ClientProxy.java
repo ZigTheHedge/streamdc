@@ -22,4 +22,9 @@ public class ClientProxy extends CommonProxy {
     public void saveDeath(ServerPlayer entity) {
         super.saveDeath(entity);
     }
+
+    @Override
+    public void setDeathCount(ServerPlayer entity, int amount) {
+        super.setDeathCount(entity, amount);
+    }
 }

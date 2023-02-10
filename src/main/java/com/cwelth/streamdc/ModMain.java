@@ -2,11 +2,13 @@ package com.cwelth.streamdc;
 
 import com.google.gson.Gson;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
@@ -94,21 +96,32 @@ public class ModMain {
             CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
             LiteralCommandNode<CommandSourceStack> cmdsSDC = dispatcher.register(
                     Commands.literal("dc")
+                            .then(Commands.literal("set")
+                                .then(Commands.argument("amount", IntegerArgumentType.integer(0))
+                                    .executes( cs -> {
+                                        ServerPlayer sender = cs.getSource().getPlayerOrException();
+                                        int amount = IntegerArgumentType.getInteger(cs, "amount");
+                                        ModMain.proxy.setDeathCount(sender, amount);
+
+                                        return 0;
+                                    })
+                                )
+                            )
                             .requires( cs -> cs.getEntity() instanceof ServerPlayer )
-                            .executes( cs -> {
-                                ServerPlayer sender = cs.getSource().getPlayerOrException();
+                                .executes( cs -> {
+                                    ServerPlayer sender = cs.getSource().getPlayerOrException();
 
-                                int rank = PlayerDeathCounter.getRank(sender.getUUID().toString(), ModMain.playerDeathCounters);
+                                    int rank = PlayerDeathCounter.getRank(sender.getUUID().toString(), ModMain.playerDeathCounters);
 
-                                if(rank == -1)
-                                    sender.sendMessage(new TextComponent(ChatFormatting.WHITE + "Your DeathCounter rank is: Out of Ranks (no single death registered!)"), Util.NIL_UUID);
-                                else {
-                                    sender.sendMessage(new TextComponent(ChatFormatting.WHITE + "Your DeathCounter rank is: " + rank + "(" + ModMain.playerDeathCounters.get(rank-1).getDeathCount() + " death(s))"), Util.NIL_UUID);
-                                }
-                                PlayerDeathCounter.sendRankTable(sender, ModMain.playerDeathCounters);
-                                return 0;
-                            })
-            );
+                                    if(rank == -1)
+                                        sender.sendMessage(new TextComponent(ChatFormatting.WHITE + "Your DeathCounter rank is: Out of Ranks (no single death registered!)"), Util.NIL_UUID);
+                                    else {
+                                        sender.sendMessage(new TextComponent(ChatFormatting.WHITE + "Your DeathCounter rank is: " + rank + "(" + ModMain.playerDeathCounters.get(rank-1).getDeathCount() + " death(s))"), Util.NIL_UUID);
+                                    }
+                                    PlayerDeathCounter.sendRankTable(sender, ModMain.playerDeathCounters);
+                                    return 0;
+                                })
+                );
         }
 
         @SubscribeEvent

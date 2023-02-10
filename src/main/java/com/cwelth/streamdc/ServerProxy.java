@@ -23,6 +23,11 @@ public class ServerProxy extends CommonProxy {
     }
 
     @Override
+    public void setDeathCount(ServerPlayer entity, int amount) {
+        super.setDeathCount(entity, amount);
+    }
+
+    @Override
     public String getPath() {
         final MinecraftServer server = this.serverWeakReference != null ? this.serverWeakReference.get() : null;
         final File file = server != null ? server.getFile(".") : new File(".");
